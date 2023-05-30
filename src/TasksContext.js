@@ -34,6 +34,7 @@ export function useTasksDispatch() {
 **/
 // do some things in 1st branch
 // at more line
+// this change on brnach 2
 function tasksReducer(tasks, action) {
   switch (action.type) {
     case 'added': {
