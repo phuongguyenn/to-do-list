@@ -33,6 +33,7 @@ export function useTasksDispatch() {
 * cho nay comment tu nhanh main
 **/
 // do some things in 1st branch
+// at more line
 function tasksReducer(tasks, action) {
   switch (action.type) {
     case 'added': {
