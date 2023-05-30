@@ -28,6 +28,7 @@ export function useTasksDispatch() {
   return useContext(TasksDispatchContext);
 }
 // test commit 2
+// do sth else at main
 function tasksReducer(tasks, action) {
   switch (action.type) {
     case 'added': {
