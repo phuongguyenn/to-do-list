@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useTasks, useTasksDispatch } from './TasksContext.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBook, faPenToSquare, faTrashCan } from '@fortawesome/free-solid-svg-icons'
@@ -8,34 +8,53 @@ export default function ToDoList(props) {
   const tasks = useTasks()
   const dispatch = useTasksDispatch();
   const [all, setAll] = useState(tasks);
-
-
   const setText = props.setText;
   const setEditTaskId = props.setEditTaskId;
-
   React.useEffect(() => setAll(tasks), [tasks])
   // const [showing, setShowing] = useState (tasks);
+  { all.sort((a, b) => a.done - b.done) }
+
+  function alls() {
+    setAll(tasks.filter(a => a.text))
+  }
+
+  function done() {
+    setAll(tasks.filter(a => a.done))
+  }
+  function todo() {
+    setAll(tasks.filter(a => !a.done))
+  }
+  function deleteAll() {
+    dispatch({
+      type: 'deleteAll',
+      id: tasks.text
+    });
+  }
+  function deleteDone() {
+    dispatch({
+      type: 'deleteDone',
+      id: tasks.done
+    });
+  }
 
   return (
     <>
       <div className='selected'>
         <button
           className='all'
-          onClick={() => setAll(tasks.filter(a => a.text))}>All</button>
+          onClick={alls}>All</button>
 
         <button
           className='done'
-          onClick={() => setAll(tasks.filter(a => a.done))}>Done</button>
+          onClick={done}>Done</button>
 
         <button
           className='todo'
-          onClick={() => setAll(tasks.filter(a => !a.done))}>To Do</button>
+          onClick={todo}>To Do</button>
       </div>
 
       <ul>
-        {all
-        .sort((a,b) => a.done - b.done)
-        .map(task => (
+        {all.map(task => (
           <li key={task.id}>
             <Task task={task} setText={setText} setEditTaskId={setEditTaskId} />
           </li>
@@ -43,22 +62,12 @@ export default function ToDoList(props) {
       </ul>
       <div className='deleted'>
         <button
-          className='allTasks'
-          onClick={() => {
-            dispatch({
-              type: 'allTasks',
-              id: tasks.text
-            });
-          }}>Delete all tasks</button>
+          className='deleteAll'
+          onClick={deleteAll}>Delete all tasks</button>
 
         <button
-          className='doneTasks'
-          onClick={() => {
-            dispatch({
-              type: 'doneTasks',
-              id: tasks.done
-            });
-          }}>Delete done tasks</button>
+          className='deleteDone'
+          onClick={deleteDone}>Delete done tasks</button>
       </div>
     </>
 
@@ -74,31 +83,33 @@ function Task({ task, setText, setEditTaskId }) {
   if (task.done === true) { style = { textDecorationLine: 'line-through', color: 'red' } }
   else { style = {} }
 
-  let taskContent;
-  if (isEditing) {
-    taskContent = (
-      <>
-        <input
-          value={task.text}
-          onChange={e => {
-            dispatch({
-              type: 'changed',
-              task: {
-                ...task,
-                text: e.target.value
-              }
-            });
-          }} />
+  const taskContent = useMemo(()=>{
+    if(isEditing){
+         return (
+     <>
+       <input
+         value={task.text}
+         onChange={e => {
+           dispatch({
+             type: 'changed',
+             task: {
+               ...task,
+               text: e.target.value
+             }
+           });
+         }} />
 
-      </>
-    );
-  } else {
-    taskContent = (
+     </>
+   );
+    } else {
+      return (
       <>
         {task.text}
       </>
     );
   }
+},[isEditing])
+  
   return (
     <>
       <div
@@ -123,10 +134,10 @@ function Task({ task, setText, setEditTaskId }) {
         />
 
         <button
-          onClick= {() => {
-            if(task.done === false) {
+          onClick={() => {
+            if (task.done === false) {
               setText(task.text);
-            setEditTaskId(task.id)
+              setEditTaskId(task.id)
             }
           }}
           className='svgList'>

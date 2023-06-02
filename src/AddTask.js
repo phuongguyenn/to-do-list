@@ -41,6 +41,17 @@ export default function AddTask(onAddTask) {
     }
   }
 
+  function onInputChange(e) {
+    setText(e.target.value); setError()
+  }
+  function handleSubmit() {
+    if (editTaskId !== null) {
+      handelUpdate();
+    } else {
+      handleCreate()
+    }
+  }
+
   return (
     <>
       <div className='toDoContent'>
@@ -51,21 +62,16 @@ export default function AddTask(onAddTask) {
             className='inputNewTodo'
             placeholder="New Todo"
             value={text}
-            onChange={e => { setText(e.target.value); setError() }}
+            onChange={(e) => onInputChange(e)}
           />
 
         </div>
 
         {error && <p> {error}</p>}
+
         <button
           className='addNewTask'
-          onClick={() => {
-            if (editTaskId !== null) {
-              handelUpdate();
-            } else {
-              handleCreate()
-            }
-          }}>{editTaskId !== null ? "Update Task" : "Add new task"}</button>
+          onClick={handleSubmit}>{editTaskId !== null ? "Update Task" : "Add new task"}</button>
       </div>
     </>
   );

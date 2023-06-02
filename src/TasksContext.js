@@ -68,10 +68,10 @@ function tasksReducer(tasks, action) {
         }
       });
     }
-    case 'allTasks': {
+    case 'deleteAll': {
       return [];
     }
-    case 'doneTasks': {
+    case 'deleteDone': {
       return tasks.filter(t => !t.done);
     }
     case 'deleted': {

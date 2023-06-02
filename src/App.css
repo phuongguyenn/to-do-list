@@ -134,8 +134,8 @@ li {
   padding: 5px;
   height: 60px;
 }
-.allTasks,
-.doneTasks {
+.deleteAll,
+.deleteDone {
   width: 250px;
   background-color: crimson;
   border: none;
